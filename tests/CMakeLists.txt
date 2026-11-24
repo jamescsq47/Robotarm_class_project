@@ -1,0 +1,16 @@
+cmake_minimum_required(VERSION 3.22)
+project(robotarm_host_tests C)
+set(CMAKE_C_STANDARD 11)
+enable_testing()
+
+add_executable(test_actions test_sequence.c
+  ../Core/Src/servo.c ../Core/Src/servo_motion.c ../Core/Src/robotarm_actions.c)
+add_executable(test_pwm test_pwm.c)
+foreach(target IN ITEMS test_actions test_pwm)
+  target_include_directories(${target} PRIVATE include ../Core/Inc)
+  if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(${target} PRIVATE -Wall -Wextra -Werror)
+  endif()
+endforeach()
+add_test(NAME actions COMMAND test_actions)
+add_test(NAME pwm COMMAND test_pwm)
